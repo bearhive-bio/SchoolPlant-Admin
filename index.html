@@ -3,128 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>教師端 V3 - 題庫與成績管理系統</title>
+    <title>教師管理後台 - 校園植物辨識</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+<body class="bg-slate-50 p-4 md:p-8">
 
-    <nav class="bg-white border-b border-slate-200 px-6 py-4 mb-8">
-        <div class="max-w-5xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-indigo-600 flex items-center gap-2">
-                <span class="text-2xl">🌿</span> 校園植物辨識管理系統 <span class="text-xs bg-indigo-100 px-2 py-0.5 rounded text-indigo-500">專業版</span>
+    <div class="max-w-[1400px] mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-black text-slate-800 flex items-center gap-2">
+                <span class="text-4xl">🛠️</span> 植物辨識測驗管理後台
             </h1>
         </div>
-    </nav>
 
-    <main class="max-w-5xl mx-auto px-4 pb-12">
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-10">
-            <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
-                <h2 class="font-semibold text-slate-700">新增測驗題目</h2>
-            </div>
-            
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">路線等級</label>
-                        <select id="qLevel" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="STEAM校園探索路線">等級一：STEAM校園探索路線</option>
-                            <option value="華興植物誌">等級二：華興植物誌</option>
-                        </select>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+            <h2 class="text-xl font-bold text-emerald-600 mb-4 flex items-center gap-2">
+                <span>➕</span> 新增測驗題目
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <select id="qLevel" class="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-emerald-500">
+                        <option value="STEAM校園探索路線">等級一：STEAM校園探索路線</option>
+                        <option value="華興植物誌">等級二：華興植物誌</option>
+                    </select>
+                    <select id="qType" onchange="toggleInputType()" class="w-full border border-slate-300 p-3 rounded-xl focus:ring-2 focus:ring-emerald-500">
+                        <option value="text">題目類型：純文字描述</option>
+                        <option value="image">題目類型：圖片辨識 (上傳照片)</option>
+                    </select>
+                    <div id="textInputArea">
+                        <textarea id="qContentText" placeholder="輸入題目內容（例如：請問此植物的特徵是？）" class="w-full border border-slate-300 p-3 rounded-xl h-24 outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">題目類型</label>
-                        <select id="qType" onchange="toggleInputType()" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="image">照片辨識題 (直接上傳照片)</option>
-                            <option value="text">文字特徵辨識題 (輸入描述)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">正確植物名稱</label>
-                        <input type="text" id="qAnswer" placeholder="例如：黃金葛" class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500">
+                    <div id="imageInputArea" class="hidden">
+                        <input type="file" id="qContentFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
                     </div>
                 </div>
-
-                <div class="mb-6">
-                    <label id="contentLabel" class="block text-sm font-medium text-slate-700 mb-1">上傳植物照片 (自動壓縮至1600px)</label>
-                    <div id="imageInputArea">
-                        <input type="file" id="qFile" accept="image/*" class="w-full border border-dashed border-slate-300 rounded-lg p-8 text-center cursor-pointer hover:bg-slate-50 transition">
-                    </div>
-                    <div id="textInputArea" class="hidden">
-                        <textarea id="qTextContent" rows="3" placeholder="請輸入植物的特徵描述..." class="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-                    </div>
-                </div>
-
-                <div class="mb-8">
-                    <label class="block text-sm font-medium text-slate-700 mb-3">設定干擾選項 (錯的答案)</label>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input type="text" id="opt1" placeholder="錯誤選項 1" class="border border-slate-300 rounded-lg p-2.5 outline-none focus:border-indigo-500">
-                        <input type="text" id="opt2" placeholder="錯誤選項 2" class="border border-slate-300 rounded-lg p-2.5 outline-none focus:border-indigo-500">
-                        <input type="text" id="opt3" placeholder="錯誤選項 3" class="border border-slate-300 rounded-lg p-2.5 outline-none focus:border-indigo-500">
-                    </div>
-                </div>
-
-                <div class="flex justify-end items-center gap-4">
-                    <span id="statusMsg" class="text-sm text-indigo-600 font-medium"></span>
-                    <button onclick="saveQuestion()" id="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-2.5 rounded-lg transition shadow-md disabled:bg-slate-400">
-                        確認儲存題目
+                <div class="space-y-3">
+                    <input type="text" id="opt1" placeholder="選項 A (正確答案)" class="w-full border border-emerald-200 p-3 rounded-xl bg-emerald-50 focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="opt2" placeholder="選項 B" class="w-full border border-slate-300 p-3 rounded-xl">
+                    <input type="text" id="opt3" placeholder="選項 C" class="w-full border border-slate-300 p-3 rounded-xl">
+                    <input type="text" id="opt4" placeholder="選項 D" class="w-full border border-slate-300 p-3 rounded-xl">
+                    <button onclick="addQuestion()" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-md">
+                        儲存並新增題目
                     </button>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section>
-            <h2 class="text-lg font-bold text-slate-800 mb-4">目前題庫庫存 <span id="qCount" class="bg-slate-200 text-slate-600 text-xs px-2 py-1 rounded-full">0</span></h2>
-            <div id="questionList" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm"></div>
-        </section>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[700px]">
+                <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                    <h2 class="font-bold text-slate-700 flex items-center gap-2">
+                        <span>📚</span> 目前題庫庫存 (<span id="qCount">0</span>)
+                    </h2>
+                </div>
+                <div id="qList" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+                    <p class="text-center text-slate-400 py-10">讀取中...</p>
+                </div>
+            </div>
 
-        <section class="mt-12 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="bg-indigo-50 border-b border-indigo-100 px-6 py-4 flex justify-between items-center">
-                <h2 class="font-bold text-indigo-800">📊 學生測驗成績單 (<span id="totalRecords">0</span>)</h2>
-                <button onclick="clearAllRecords()" class="text-xs bg-white border border-red-200 text-red-500 px-3 py-1 rounded hover:bg-red-50 transition">清空紀錄</button>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[700px]">
+                <div class="p-5 border-b border-slate-100 bg-slate-50">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <h2 class="font-bold text-slate-700 flex items-center gap-2">
+                            <span>📝</span> 學生測驗成績單
+                        </h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500">篩選班級:</span>
+                            <select id="classFilter" onchange="renderRecords()" class="text-sm border border-slate-300 rounded-lg p-1 px-2 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <option value="all">全部班級</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 overflow-y-auto p-0 bg-white">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="sticky top-0 bg-white shadow-sm z-10">
+                            <tr class="text-xs uppercase text-slate-400 font-bold border-b border-slate-100">
+                                <th class="px-6 py-4">班級座號</th>
+                                <th class="px-6 py-4">姓名</th>
+                                <th class="px-6 py-4">測驗路線</th>
+                                <th class="px-6 py-4">成績</th>
+                                <th class="px-6 py-4">時間</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordTable" class="text-sm text-slate-600 divide-y divide-slate-50">
+                            </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50">
-                            <th class="p-3 text-xs font-bold text-slate-500 border-b">班級</th>
-                            <th class="p-3 text-xs font-bold text-slate-500 border-b">座號</th>
-                            <th class="p-3 text-xs font-bold text-slate-500 border-b">姓名</th>
-                            <th class="p-3 text-xs font-bold text-slate-500 border-b">挑戰路線</th>
-                            <th class="p-3 text-xs font-bold text-slate-500 border-b text-center">分數</th>
-                            <th class="p-3 text-xs font-bold text-slate-500 border-b text-right">上傳時間</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recordList">
-                        </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
+
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, query, orderBy, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-        // 1. 介面控制功能
-        window.toggleInputType = () => {
-            const type = document.getElementById('qType').value;
-            const imgArea = document.getElementById('imageInputArea');
-            const textArea = document.getElementById('textInputArea');
-            const label = document.getElementById('contentLabel');
-            
-            if(type === 'image') {
-                imgArea.classList.remove('hidden');
-                textArea.classList.add('hidden');
-                label.innerText = "上傳植物照片 (自動壓縮至1600px)";
-            } else {
-                imgArea.classList.add('hidden');
-                textArea.classList.remove('hidden');
-                label.innerText = "文字特徵描述";
-            }
-        };
-
-        // 2. Firebase 設定與連線 (已幫您帶入您提供的金鑰！)
         const firebaseConfig = {
             apiKey: "AIzaSyCbM2BgbSe8Ki6ycGPMeBppWJEWKU9r7ic",
             authDomain: "schoolplant-question.firebaseapp.com",
@@ -135,170 +110,142 @@
             measurementId: "G-FH4YQXJ5M4"
         };
 
-        let db, storage, qCol, recordCol;
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
 
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            storage = getStorage(app);
-            qCol = collection(db, "plant_questions");
-            recordCol = collection(db, "student_records");
-        } catch (error) {
-            console.error("Firebase 連線失敗！", error);
-        }
+        let allRecords = []; // 儲存所有成績
 
-        // 3. 圖片壓縮
-        async function compressImage(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        const maxWidth = 1600;
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
-                    };
-                };
-            });
-        }
+        // 切換輸入類型
+        window.toggleInputType = () => {
+            const type = document.getElementById('qType').value;
+            document.getElementById('textInputArea').classList.toggle('hidden', type !== 'text');
+            document.getElementById('imageInputArea').classList.toggle('hidden', type !== 'image');
+        };
 
-        // 4. 儲存題目
-        window.saveQuestion = async () => {
-            if(!db) return alert("Firebase 未連線，無法儲存！請檢查金鑰。");
-
+        // 新增題目
+        window.addQuestion = async () => {
             const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('statusMsg');
             const level = document.getElementById('qLevel').value;
             const type = document.getElementById('qType').value;
-            const answer = document.getElementById('qAnswer').value.trim();
-            const opt1 = document.getElementById('opt1').value.trim();
-            const opt2 = document.getElementById('opt2').value.trim();
-            const opt3 = document.getElementById('opt3').value.trim();
+            const options = [
+                document.getElementById('opt1').value.trim(),
+                document.getElementById('opt2').value.trim(),
+                document.getElementById('opt3').value.trim(),
+                document.getElementById('opt4').value.trim()
+            ];
+            const answer = options[0];
 
-            if (!answer || !opt1 || !opt2 || !opt3) return alert("請填寫所有選項欄位");
+            if(!options[0] || !options[1]) return alert("請至少填寫 A 和 B 兩個選項！");
 
             btn.disabled = true;
-            status.innerText = "正在處理中...";
+            btn.innerText = "上傳中...";
 
             try {
-                let finalContent = "";
-                if (type === 'image') {
-                    const fileInput = document.getElementById('qFile');
-                    if (fileInput.files.length === 0) throw new Error("請選擇照片");
-                    status.innerText = "正在壓縮並上傳圖片...";
-                    const compressedBlob = await compressImage(fileInput.files[0]);
-                    const fileName = `plants/${Date.now()}_${answer}.jpg`;
-                    const storageRef = ref(storage, fileName);
-                    await uploadBytes(storageRef, compressedBlob);
-                    finalContent = await getDownloadURL(storageRef);
+                let content = "";
+                if(type === 'text') {
+                    content = document.getElementById('qContentText').value.trim();
                 } else {
-                    finalContent = document.getElementById('qTextContent').value.trim();
-                    if (!finalContent) throw new Error("請輸入文字內容");
+                    const file = document.getElementById('qContentFile').files[0];
+                    if(!file) throw new Error("請選擇圖片檔案");
+                    const storageRef = ref(storage, `plants/${Date.now()}_${file.name}`);
+                    const uploadResult = await uploadBytes(storageRef, file);
+                    content = await getDownloadURL(uploadResult.ref);
                 }
 
-                await addDoc(qCol, {
-                    level, type, answer, content: finalContent,
-                    options: [answer, opt1, opt2, opt3],
-                    createdAt: serverTimestamp()
+                await addDoc(collection(db, "plant_questions"), {
+                    level, type, content, options, answer, createdAt: serverTimestamp()
                 });
 
-                alert("題目儲存成功！");
-                location.reload(); 
+                alert("題目新增成功！");
+                location.reload();
             } catch (e) {
-                alert("錯誤: " + e.message);
-            } finally {
+                alert("錯誤：" + e.message);
                 btn.disabled = false;
-                status.innerText = "";
+                btn.innerText = "儲存並新增題目";
             }
         };
 
-        // 5. 刪除題目
-        window.deleteQ = async (id) => {
-            if (confirm("確定刪除此題目？")) await deleteDoc(doc(db, "plant_questions", id));
-        };
-
-        // 6. 清空成績
-        window.clearAllRecords = async () => {
-            if(confirm("確定要清空所有學生的考試紀錄嗎？此動作無法復原。")) {
-                try {
-                    const snapshot = await getDocs(recordCol);
-                    const deletePromises = snapshot.docs.map(d => deleteDoc(doc(db, "student_records", d.id)));
-                    await Promise.all(deletePromises);
-                    alert("紀錄已全數清空！");
-                } catch (e) {
-                    alert("清空失敗: " + e.message);
-                }
-            }
-        };
-
-        // 7. 即時監聽 (載入舊題目與學生成績)
-        if (db) {
-            onSnapshot(qCol, (snapshot) => {
-                const listDiv = document.getElementById('questionList');
-                if(!listDiv) return;
+        // 監聽題庫列表
+        onSnapshot(query(collection(db, "plant_questions"), orderBy("createdAt", "desc")), (snapshot) => {
+            const qList = document.getElementById('qList');
+            document.getElementById('qCount').innerText = snapshot.size;
+            qList.innerHTML = "";
+            snapshot.forEach(d => {
+                const q = d.data();
+                const div = document.createElement('div');
+                div.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative group";
+                const badgeColor = q.level === "STEAM校園探索路線" ? "bg-amber-100 text-amber-700" : "bg-purple-100 text-purple-700";
                 
-                document.getElementById('qCount').innerText = snapshot.size;
-                listDiv.innerHTML = "";
-
-                let docs = [];
-                snapshot.forEach(d => docs.push({id: d.id, ...d.data()}));
-                docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
-                docs.forEach((q) => {
-                    const card = document.createElement('div');
-                    card.className = "bg-white p-4 rounded-lg border border-slate-200 shadow-sm";
-                    const levelColor = q.level === 'STEAM校園探索路線' ? 'bg-amber-100 text-amber-700' : 'bg-purple-100 text-purple-700';
-                    card.innerHTML = `
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <span class="${levelColor} text-[10px] font-bold px-2 py-0.5 rounded mr-1">${q.level}</span>
-                                <span class="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded">${q.type === 'image' ? '照片題' : '文字題'}</span>
-                            </div>
-                            <button onclick="deleteQ('${q.id}')" class="text-slate-300 hover:text-red-500">✕</button>
+                div.innerHTML = `
+                    <div class="flex gap-4">
+                        ${q.type === 'image' ? `<img src="${q.content}" class="w-20 h-20 object-cover rounded-lg">` : `<div class="w-20 h-20 bg-slate-100 flex items-center justify-center rounded-lg text-xs p-2 overflow-hidden">${q.content}</div>`}
+                        <div class="flex-1">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-full ${badgeColor}">${q.level}</span>
+                            <p class="text-sm font-bold mt-2 text-slate-700">正解：${q.answer}</p>
+                            <p class="text-xs text-slate-400 mt-1">選項：${q.options.join(', ')}</p>
                         </div>
-                        ${q.type==='image' ? `<img src="${q.content}" class="w-full h-32 object-cover rounded border mb-2">` : `<p class="italic text-slate-500 mb-2 line-clamp-3">"${q.content}"</p>`}
-                        <div class="font-bold">解答：${q.answer}</div>
-                    `;
-                    listDiv.appendChild(card);
-                });
+                    </div>
+                    <button onclick="deleteQ('${d.id}')" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition text-xs">刪除</button>
+                `;
+                qList.appendChild(div);
+            });
+        });
+
+        // 刪除題目
+        window.deleteQ = async (id) => {
+            if(confirm("確定要刪除這道題目嗎？")) {
+                await deleteDoc(doc(db, "plant_questions", id));
+            }
+        };
+
+        // 監聽並渲染成績單
+        onSnapshot(query(collection(db, "student_records"), orderBy("submitTime", "desc")), (snapshot) => {
+            allRecords = [];
+            const classes = new Set();
+            
+            snapshot.forEach(d => {
+                const r = d.data();
+                allRecords.push(r);
+                if(r.className) classes.add(r.className);
             });
 
-            onSnapshot(query(recordCol, orderBy("submitTime", "desc")), (snapshot) => {
-                const recordListDiv = document.getElementById('recordList');
-                if(!recordListDiv) return;
-
-                document.getElementById('totalRecords').innerText = snapshot.size;
-                recordListDiv.innerHTML = "";
-
-                snapshot.forEach((rDoc) => {
-                    const r = rDoc.data();
-                    const time = r.submitTime ? new Date(r.submitTime.seconds * 1000).toLocaleString() : '上傳中...';
-                    const row = document.createElement('tr');
-                    row.className = "border-b border-slate-100 hover:bg-slate-50 transition";
-                    row.innerHTML = `
-                        <td class="p-3 text-sm text-slate-600">${r.className || '無'}</td>
-                        <td class="p-3 text-sm text-slate-600">${r.seat || '0'}</td>
-                        <td class="p-3 text-sm font-bold text-slate-800">${r.name || '未命名'}</td>
-                        <td class="p-3 text-sm text-indigo-600">${r.route || '未設定'}</td>
-                        <td class="p-3 text-sm font-black text-center ${r.score >= 15 ? 'text-emerald-600' : 'text-slate-600'}">${r.score} / ${r.totalQuestions}</td>
-                        <td class="p-3 text-[10px] text-slate-400 text-right">${time}</td>
-                    `;
-                    recordListDiv.appendChild(row);
-                });
+            // 更新班級篩選選單
+            const filter = document.getElementById('classFilter');
+            const currentVal = filter.value;
+            filter.innerHTML = `<option value="all">全部班級</option>`;
+            Array.from(classes).sort().forEach(c => {
+                filter.innerHTML += `<option value="${c}">${c}</option>`;
             });
-        }
+            filter.value = currentVal;
+
+            renderRecords();
+        });
+
+        // 渲染表格 (支援篩選)
+        window.renderRecords = () => {
+            const filterVal = document.getElementById('classFilter').value;
+            const table = document.getElementById('recordTable');
+            table.innerHTML = "";
+
+            const filtered = filterVal === "all" ? allRecords : allRecords.filter(r => r.className === filterVal);
+
+            filtered.forEach(r => {
+                const date = r.submitTime ? r.submitTime.toDate().toLocaleString('zh-TW', {hour12:false}) : "上傳中...";
+                const row = `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 font-medium text-slate-900">${r.className} (${r.seat})</td>
+                        <td class="px-6 py-4">${r.name}</td>
+                        <td class="px-6 py-4 text-xs font-bold">${r.route}</td>
+                        <td class="px-6 py-4">
+                            <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold">${r.score} / ${r.totalQuestions}</span>
+                        </td>
+                        <td class="px-6 py-4 text-[10px] text-slate-400">${date}</td>
+                    </tr>
+                `;
+                table.innerHTML += row;
+            });
+        };
     </script>
 </body>
 </html>
